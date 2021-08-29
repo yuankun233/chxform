@@ -330,11 +330,22 @@ export default {
         },
         // 提交按钮
         submit() {
-           
             console.log(this.form1)
             console.log(this.form2)
-            uni.navigateTo({
-                url: '../page2/page2'
+            
+            //表单非空验证
+            let flag = Object.values(this.form1).every(function(item) {
+                return item != ''
+            })
+            console.log(flag)
+            if (flag) {
+                uni.navigateTo({
+                    url: '../page2/page2'
+                })
+            }
+            uni.showToast({
+                title: '有未填选项',
+                icon: 'none'
             })
         }
     }

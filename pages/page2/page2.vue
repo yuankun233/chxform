@@ -288,7 +288,21 @@ export default {
         },
         // 提交表单
         submit() {
-            console.log(this.form)
+            //表单非空验证
+            let flag = Object.values(this.form).every(function(item) {
+                return item != ''
+            })
+            if (flag == false) {
+                uni.showToast({
+                    title: '有未填选项',
+                    icon: 'none'
+                })
+                return
+            }
+            uni.showToast({
+                title: '提交成功',
+                icon: 'success'
+            })
         }
     }
 }
@@ -306,7 +320,7 @@ export default {
     .main1 {
         position: absolute;
         top: 84rpx;
-        left: 33rpx;
+        left: 45rpx;
         height: 3700rpx;
         width: 658rpx;
         background-color: #ffffff;
