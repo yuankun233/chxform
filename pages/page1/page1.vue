@@ -39,10 +39,26 @@
 					<view>参保地:</view>
 					<view><input type="text" placeholder="请输入" v-model="form1.canbaodi" /></view>
 				</view>
-				<view class="index_1_text_3">
+				<!-- 失能时间选择器 -->
+				<view class="shinengTime">
+					<view class="uni-title uni-common-pl title">失能时间:</view>
+					<view class="uni-list select">
+						<view class="uni-list-cell">
+
+							<view class="uni-list-cell-db">
+								<picker mode="date" :value="date" :start="startDate" :end="endDate"
+									@change="bindDateChange">
+									<view class="uni-input">{{date}}</view>
+								</picker>
+							</view>
+						</view>
+					</view>
+				</view>
+
+				<!-- <view class="index_1_text_3">
 					<view>失能时间:</view>
 					<view><input type="text" placeholder="请输入" v-model="form1.shinengTime" /></view>
-				</view>
+				</view> -->
 				<view class="index_1_text_666">
 					<view class="relation_1">是否经过康复治疗：</view>
 					<radio-group @change="radioChange($event, 2)" class="radios">
@@ -266,7 +282,11 @@
 <script>
 	export default {
 		data() {
+			// const currentDate = this.getDate({
+			// 	format: true
+			// })
 			return {
+				date: '请选择',
 				form1: {
 					name: '', //姓名
 					idcard: '', //身份证
@@ -294,7 +314,37 @@
 				}
 			}
 		},
+		computed: {
+			// 日期级联选择器相关计算属性
+			startDate() {
+				return this.getDate('start');
+			},
+			endDate() {
+				return this.getDate('end');
+			}
+		},
 		methods: {
+			// 日期级联选择器相关方法
+			bindDateChange: function(e) {
+				this.date = e.target.value
+				this.form1.shinengTime = this.date
+				console.log('失能时间', this.form1.shinengTime)
+			},
+			getDate(type) {
+				const date = new Date();
+				let year = date.getFullYear();
+				let month = date.getMonth() + 1;
+				let day = date.getDate();
+
+				if (type === 'start') {
+					year = year - 60;
+				} else if (type === 'end') {
+					year = year + 2;
+				}
+				month = month > 9 ? month : '0' + month;
+				day = day > 9 ? day : '0' + day;
+				return `${year}-${month}-${day}`;
+			},
 			// 表单二相关方法
 			// 单选切换
 			radioChange(e, key) {
@@ -590,5 +640,28 @@
 		z-index: 99;
 		width: 300rpx;
 		height: 80rpx;
+	}
+
+	// 失能时间级联选择框样式
+	.shinengTime {
+		display: flex;
+
+		.title {
+			height: 84rpx;
+			font-size: 28rpx;
+			border-bottom: 2rpx solid #f6f6f6;
+			font-weight: 400;
+			color: #6b7072;
+			line-height: 84rpx;
+		}
+		.select{
+			margin-left: 20rpx;
+			height: 84rpx;
+			font-size: 32rpx;
+			border-bottom: 2rpx solid #f6f6f6;
+			font-weight: 400;
+			color: #6b7072;
+			line-height: 84rpx;
+		}
 	}
 </style>
