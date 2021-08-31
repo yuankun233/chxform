@@ -78,10 +78,16 @@
 				<image src="../../static/submitreminder.png" class="bannericon"></image>
 				<view class="content">
 					<view class="tit">
-						提交成功
+						资料提交成功
 					</view>
 					<view class="text">
-						您的失能等级为：E
+						您的评估结果为:{{grade1}}
+					</view>
+					<view class="text char1" v-if="isPass">
+						请等候工作人员联系您
+					</view>
+					<view class="text char2" v-else>
+						未通过长护险评估
 					</view>
 					<view class="mybutton" @click="close()">我知道了</view>
 				</view>
@@ -94,13 +100,15 @@
 	export default {
 		data() {
 			return {
+				isPass: null,
+				grade1: null,
 				form: {
-					topic1: '独立，无需帮助',
-					topic2: '独立，无需帮助，能独立拿取衣服，穿上并扣好',
-					topic3: '独立，自己能够完全控制',
-					topic4: '独立，无需帮助，能独立用厕、便后拭净及整理衣裤，可用手杖、助步器或轮椅，能处理便盆，尿壶',
-					topic5: '独立，无需帮助，自己能进出浴室，淋浴、浴盆，独立洗澡',
-					topic6: '独立，无需帮助，能自己下场，坐上及离开椅，凳，可用手杖、助步器'
+					eat: 2,
+					dress: 2,
+					defecateControl: 2,
+					toilet: 2,
+					takeashower: 2,
+					bedchairMove: 2
 				},
 				topic1: [{
 						type: 1,
@@ -204,14 +212,24 @@
 
 			// 自定义单选
 			radioChange(index, type) {
+				let score // 表示选项的得分
+				if (index == 0) {
+					score = 2
+				}
+				if (index == 1) {
+					score = 1
+				}
+				if (index == 2) {
+					score = 0
+				}
+				console.log(score)
 				if (type == 1) {
 					console.log(type, index)
 					this.topic1.forEach(item => {
 						item.isActive = false
 					}) // 先把所有的单选状态变为false
 					this.topic1[index].isActive = true // 勾选状态变为true
-					this.form.topic1 = this.topic1[index].text //赋值到data
-					console.log(this.topic1)
+					this.form.eat = score //赋值到data
 				}
 				if (type == 2) {
 					console.log(type, index)
@@ -219,8 +237,7 @@
 						item.isActive = false
 					})
 					this.topic2[index].isActive = true
-					this.form.topic2 = this.topic2[index].text //赋值到data
-					console.log(this.topic1)
+					this.form.dress = score //赋值到data
 				}
 				if (type == 3) {
 					console.log(type, index)
@@ -228,8 +245,7 @@
 						item.isActive = false
 					})
 					this.topic3[index].isActive = true
-					this.form.topic3 = this.topic3[index].text //赋值到data
-					console.log(this.topic1)
+					this.form.defecateControl = score //赋值到data
 				}
 				if (type == 4) {
 					console.log(type, index)
@@ -237,8 +253,7 @@
 						item.isActive = false
 					})
 					this.topic4[index].isActive = true
-					this.form.topic4 = this.topic4[index].text //赋值到data
-					console.log(this.topic1)
+					this.form.toilet = score //赋值到data
 				}
 				if (type == 5) {
 					console.log(type, index)
@@ -246,8 +261,7 @@
 						item.isActive = false
 					})
 					this.topic5[index].isActive = true
-					this.form.topic5 = this.topic5[index].text //赋值到data
-					console.log(this.topic1)
+					this.form.takeashower = score //赋值到data
 				}
 				if (type == 6) {
 					console.log(type, index)
@@ -255,25 +269,63 @@
 						item.isActive = false
 					})
 					this.topic6[index].isActive = true
-					this.form.topic6 = this.topic6[index].text //赋值到data
-					console.log(this.topic1)
+					this.form.bedchairMove = score //赋值到data
 				}
 			},
 			// 提交表单
 			submit() {
-				//表单非空验证
-				let flag = Object.values(this.form).every(function(item) {
-					return item != ''
+				console.log(this.form)
+				// //表单非空验证
+				// let flag = Object.values(this.form).every(function(item) {
+				// 	return item != 0 | 1 | 2
+				// })
+				// console.log(flag)
+				// if (flag == false) {
+				// 	uni.showToast({
+				// 		title: '有未填选项',
+				// 		icon: 'none'
+				// 	})
+				// 	return
+				// }
+				uni.request({
+					method: "POST",
+					url: 'https://www.qycloud.com.cn/bee/open-72810619931328627/xhll/Level/numberTwo',
+					data: {
+						id: 666,
+						eat: this.form.eat,
+						dress: this.form.dress,
+						defecateControl: this.form.defecateControl,
+						toilet: this.form.toilet,
+						takeashower: this.form.takeashower,
+						bedchairMove: this.form.bedchairMove
+					},
+					success: (res) => {
+						console.log(res)
+						console.log(res.data.data.grade)
+						// 赋值评级
+						this.grade1 = res.data.data.grade
+						console.log(this.grade1)
+						// 判断是否通过评估
+						this.isPassWay()
+						// 弹出成功提示框
+						this.open()
+					}
 				})
-				if (flag == false) {
-					uni.showToast({
-						title: '有未填选项',
-						icon: 'none'
-					})
+
+			},
+			// 判断是否通过评估
+			isPassWay() {
+				console.log('等级：', this.grade1)
+				if (this.grade1 == 'A' || 'B' || 'C' || 'D') {
+
+					this.isPass = false
+					console.log('未通过')
+					return
+				} else {
+					this.isPass = true
+					console.log('通过评估')
 					return
 				}
-				// 弹出成功提示框
-				this.open()
 			},
 			// 提交成功提示框
 			open() {

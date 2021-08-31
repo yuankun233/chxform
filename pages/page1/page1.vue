@@ -11,8 +11,8 @@
 				</view>
 				<view class="index_1_text_3">
 					<view>身份证号码:</view>
-					<view><input type="text" placeholder="请输入" v-model="form1.idcard"
-							@blur="regExp($event,2,form1.idcard,1)" /></view>
+					<view><input type="text" placeholder="请输入" v-model="form1.ID" @blur="regExp($event,2,form1.ID,1)" />
+					</view>
 				</view>
 				<view class="index_1_text_666">
 					<view class="relation_1">性别：</view>
@@ -92,8 +92,8 @@
 				</view>
 				<view class="index_1_text_3">
 					<view>联系电话:</view>
-					<view><input type="text" placeholder="请输入" v-model="form1.tel"
-							@blur="regExp($event,1,form1.tel,1)" />
+					<view><input type="text" placeholder="请输入" v-model="form1.phone"
+							@blur="regExp($event,1,form1.phone,1)" />
 					</view>
 				</view>
 				<view class="index_1_text_2">
@@ -260,18 +260,18 @@
 
 				<view class="index_1_text_3">
 					<view>联系电话:</view>
-					<view><input type="text" placeholder="请输入" v-model="form2.tel"
-							@blur="regExp($event,1,form2.tel,2)" />
+					<view><input type="text" placeholder="请输入" v-model="form2.phone"
+							@blur="regExp($event,1,form2.phone,2)" />
 					</view>
 				</view>
 				<view class="index_1_text_3">
 					<view>身份证号码:</view>
-					<view><input type="text" placeholder="请输入" v-model="form2.idcard"
-							@blur="regExp($event,2,form2.idcard,2)" /></view>
+					<view><input type="text" placeholder="请输入" v-model="form2.ID" @blur="regExp($event,2,form2.ID,2)" />
+					</view>
 				</view>
 				<view class="index_1_text_3">
 					<view>联系地址:</view>
-					<view><input type="text" placeholder="请输入" v-model="form2.adress" /></view>
+					<view><input type="text" placeholder="请输入" v-model="form2.site" /></view>
 				</view>
 			</view>
 			<image src="../../static/nextBtn.png" class="nextBtn" mode="widthFix" @click="submit"></image>
@@ -288,28 +288,28 @@
 			return {
 				date: '请选择',
 				form1: {
-					name: '', //姓名
-					idcard: '', //身份证
-					gender: '', //性别
-					age: '', //年龄
-					nation: '', //民族
-					canbaodi: '', //参保地
+					name: 'yaoyuan', //姓名
+					ID: '410782200111080011', //身份证
+					sex: '男', //性别
+					age: '19', //年龄
+					nation: '汉', //民族
+					canbaodi: '辉县市', //参保地
 					shinengTime: '', //失能时间
-					isTreat: '', //是否经过康复治疗
-					isApply: '', // 是否首次申请
-					tel: '', // 联系电话
+					isTreat: '否', //是否经过康复治疗
+					isApply: '是', // 是否首次申请
+					phone: '17634298437', // 联系电话
 					safeWay: '', //保障方式
 					education: '', // 文化程度
 					liveStatus: '', // 居住情况
-					livePlace: '', // 居住地
+					livePlace: '河南', // 居住地
 					caregivers: '' //照护者
 				},
 				treatMonth: "", //治疗月数，非必填，isTreat为是时需要填
 				form2: {
 					name: '', //姓名
-					tel: '', //练习电话
-					idcard: '', // 身份证
-					adress: '', //联系地址
+					phone: '17634298437', //练习电话
+					ID: '410782200111080011', // 身份证
+					site: '河南省辉县市', //联系地址
 					relation: '' //关系
 				}
 			}
@@ -355,7 +355,7 @@
 				// 表单1
 				// 性别
 				if (key == 1) {
-					this.form1.gender = e.detail.value
+					this.form1.sex = e.detail.value
 				}
 				// 是否经过康复治疗
 				if (key == 2) {
@@ -407,10 +407,10 @@
 						})
 						// 清除输入框
 						if (sequence == 1) {
-							this.form1.tel = ''
+							this.form1.phone = ''
 						}
 						if (sequence == 2) {
-							this.form2.tel = ''
+							this.form2.phone = ''
 						}
 						return
 					}
@@ -426,10 +426,10 @@
 						})
 						// 清除输入框
 						if (sequence == 1) {
-							this.form1.idcard = ''
+							this.form1.ID = ''
 						}
 						if (sequence == 2) {
-							this.form2.idcard = ''
+							this.form2.ID = ''
 						}
 						return
 					}
@@ -440,9 +440,8 @@
 			},
 			// 提交按钮
 			submit() {
-				console.log(this.form1)
-				console.log(this.form2)
 
+				console.log(this.form1, this.form2)
 
 				//表单非空验证
 				let flag = Object.values(this.form1).every(function(item) {
@@ -464,19 +463,43 @@
 							// 未填写治疗月数，跳出方法
 							return
 						}
+						// 发送ajax提交表单
+						this.submitAjax()
 						// 治疗月数已填写，正常跳转
-						uni.navigateTo({
-							url: '../page2/page2'
-						})
+						// uni.navigateTo({
+						// 	url: '../page2/page2'
+						// })
 						return
 					}
-					uni.navigateTo({
-						url: '../page2/page2'
-					})
+					// 发送ajax提交表单
+					this.submitAjax()
+					// uni.navigateTo({
+					// 	url: '../page2/page2'
+					// })
+					return
 				}
 				uni.showToast({
 					title: '有未填选项',
 					icon: 'none'
+				})
+			},
+			submitAjax() {
+				const form1 = JSON.parse(JSON.stringify(this.form1))
+				const mouth = this.treatMonth
+				form1.mouth = mouth
+				const form2 = this.form2
+				console.log(form1, form2)
+				// 提交两个表单
+				uni.request({
+					method: "POST",
+					url: 'http://v5kwxp.natappfree.cc/ApplicationDate/getLongTermCareRiskAssessment',
+					data: {
+						form1,
+						form2
+					},
+					success(res) {
+						console.log(res)
+					}
 				})
 			}
 		}
@@ -654,7 +677,8 @@
 			color: #6b7072;
 			line-height: 84rpx;
 		}
-		.select{
+
+		.select {
 			margin-left: 20rpx;
 			height: 84rpx;
 			font-size: 32rpx;
