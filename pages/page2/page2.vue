@@ -7,7 +7,8 @@
 			<view class="survey box1">
 				<view class="topic">
 					<view class="title">进食</view>
-					<view class="option" v-for="(item, index) in topic1" @click="radioChange(index, item.type)">
+					<view class="option" v-for="(item, index) in topic1"
+						@click="radioChange(index, item.type,item.text)">
 						<image src="../../static/activeicon.png" mode="" v-if="item.isActive" class="radioicon"></image>
 						<image src="../../static/icon.png" mode="" class="radioicon" v-else></image>
 						<text class="text">{{ item.text }}</text>
@@ -17,7 +18,8 @@
 			<view class="survey box1">
 				<view class="topic">
 					<view class="title">穿衣</view>
-					<view class="option" v-for="(item, index) in topic2" @click="radioChange(index, item.type)">
+					<view class="option" v-for="(item, index) in topic2"
+						@click="radioChange(index, item.type,item.text)">
 						<image src="../../static/activeicon.png" mode="" v-if="item.isActive" class="radioicon"></image>
 						<image src="../../static/icon.png" mode="" class="radioicon" v-else></image>
 						<text class="text">{{ item.text }}</text>
@@ -27,7 +29,8 @@
 			<view class="survey box1">
 				<view class="topic">
 					<view class="title">大小便控制</view>
-					<view class="option" v-for="(item, index) in topic3" @click="radioChange(index, item.type)">
+					<view class="option" v-for="(item, index) in topic3"
+						@click="radioChange(index, item.type,item.text)">
 						<image src="../../static/activeicon.png" mode="" v-if="item.isActive" class="radioicon"></image>
 						<image src="../../static/icon.png" mode="" class="radioicon" v-else></image>
 						<text class="text">{{ item.text }}</text>
@@ -38,7 +41,8 @@
 			<view class="survey box1">
 				<view class="topic">
 					<view class="title">用厕</view>
-					<view class="option" v-for="(item, index) in topic4" @click="radioChange(index, item.type)">
+					<view class="option" v-for="(item, index) in topic4"
+						@click="radioChange(index, item.type,item.text)">
 						<image src="../../static/activeicon.png" mode="" v-if="item.isActive" class="radioicon"></image>
 						<image src="../../static/icon.png" mode="" class="radioicon" v-else></image>
 						<text class="text">{{ item.text }}</text>
@@ -49,7 +53,8 @@
 			<view class="survey box1">
 				<view class="topic">
 					<view class="title">洗澡</view>
-					<view class="option" v-for="(item, index) in topic5" @click="radioChange(index, item.type)">
+					<view class="option" v-for="(item, index) in topic5"
+						@click="radioChange(index, item.type,item.text)">
 						<image src="../../static/activeicon.png" mode="" v-if="item.isActive" class="radioicon"></image>
 						<image src="../../static/icon.png" mode="" class="radioicon" v-else></image>
 						<text class="text">{{ item.text }}</text>
@@ -60,7 +65,8 @@
 			<view class="survey box1">
 				<view class="topic">
 					<view class="title">床椅转移</view>
-					<view class="option" v-for="(item, index) in topic6" @click="radioChange(index, item.type)">
+					<view class="option" v-for="(item, index) in topic6"
+						@click="radioChange(index, item.type,item.text)">
 						<image src="../../static/activeicon.png" mode="" v-if="item.isActive" class="radioicon"></image>
 						<image src="../../static/icon.png" mode="" class="radioicon" v-else></image>
 						<text class="text">{{ item.text }}</text>
@@ -100,6 +106,7 @@
 	export default {
 		data() {
 			return {
+				formid: null, //表单关联所需id
 				isPass: null,
 				grade1: null,
 				form: {
@@ -110,10 +117,26 @@
 					takeashower: 2,
 					bedchairMove: 2
 				},
+				// form2: {
+				// 	feed: "独立，无需帮助", //进食		
+				// 	dress: '独立，无需帮助，能独立拿取衣服，穿上并扣好', // 穿衣
+				// 	bathtake: '独立，无需帮助，自己能进出浴室，淋浴、浴盆，独立洗澡', //洗澡
+				// 	controlBodilyFunctions: "独立，自己能够完全控制", //大小便控制
+				// 	wc: "独立，无需帮助，能独立用厕、便后拭净及整理衣裤，可用手杖、助步器或轮椅，能处理便盆，尿壶", //用厕
+				// 	transfer: "独立，无需帮助，能自己下场，坐上及离开椅，凳，可用手杖、助步器" //床椅转移
+				// },
+				form2: {
+					feed: "", //进食		
+					dress: "", // 穿衣
+					bathtake: "", //洗澡
+					controlBodilyFunctions: "", //大小便控制
+					wc: "", //用厕
+					transfer: "" //床椅转移
+				},
 				topic1: [{
 						type: 1,
 						text: '独立，无需帮助',
-						isActive: true
+						isActive: false
 					},
 					{
 						type: 1,
@@ -129,11 +152,11 @@
 				topic2: [{
 						type: 2,
 						text: '独立，无需帮助，能独立拿取衣服，穿上并扣好',
-						isActive: true
+						isActive: false
 					},
 					{
 						type: 2,
-						text: '部分独立，能独立拿取衣服及穿上，需帮助系鞋带',
+						text: '部分独立，能独立拿去衣服及缠上，需帮助系鞋带',
 						isActive: false
 					},
 					{
@@ -145,7 +168,7 @@
 				topic3: [{
 						type: 3,
 						text: '独立，自己能够完全控制',
-						isActive: true
+						isActive: false
 					},
 					{
 						type: 3,
@@ -160,12 +183,12 @@
 				],
 				topic4: [{
 						type: 4,
-						text: '独立，无需帮助，能独立用厕、便后拭净及整理衣裤，可用手杖、助步器或轮椅，能处理便盆，尿壶',
-						isActive: true
+						text: '独立，无需帮助，能独立用厕、便后拭净及整理衣裤，可用手杖、助步器或轮椅，能处理便盆、尿壶',
+						isActive: false
 					},
 					{
 						type: 4,
-						text: '不能独立完成，需要帮助入厕、做便后处理，清洁、整理衣裤及处理便盆、尿壶',
+						text: '不能独立完成，需要帮助如厕、做便后处理，清洁、整理衣裤及处理便盆、尿壶',
 						isActive: false
 					},
 					{
@@ -176,8 +199,8 @@
 				],
 				topic5: [{
 						type: 5,
-						text: '独立，无需帮助，自己能进出浴室，淋浴、浴盆，独立洗澡',
-						isActive: true
+						text: '独立，无须帮助，自己能进出浴室，淋浴、盆浴，独立洗澡',
+						isActive: false
 					},
 					{
 						type: 5,
@@ -186,14 +209,14 @@
 					},
 					{
 						type: 5,
-						text: '不能独立完成，不能洗澡、或大部分需要帮助洗',
+						text: '不能独立完成，不能洗澡、或大部分需帮助洗',
 						isActive: false
 					}
 				],
 				topic6: [{
 						type: 6,
-						text: '独立，无需帮助，能自己下场，坐上及离开椅，凳，可用手杖、助步器',
-						isActive: true
+						text: '独立，无须帮助，自己能下场，坐上及离开椅、凳，可用手杖、助步器',
+						isActive: false
 					},
 					{
 						type: 6,
@@ -211,7 +234,7 @@
 		methods: {
 
 			// 自定义单选
-			radioChange(index, type) {
+			radioChange(index, type, msg) {
 				let score // 表示选项的得分
 				if (index == 0) {
 					score = 2
@@ -229,7 +252,9 @@
 						item.isActive = false
 					}) // 先把所有的单选状态变为false
 					this.topic1[index].isActive = true // 勾选状态变为true
-					this.form.eat = score //赋值到data
+					this.form.eat = score //赋值分数到data
+					this.form2.feed = msg
+					//赋值字符串到data
 				}
 				if (type == 2) {
 					console.log(type, index)
@@ -238,6 +263,7 @@
 					})
 					this.topic2[index].isActive = true
 					this.form.dress = score //赋值到data
+					this.form2.dress = msg
 				}
 				if (type == 3) {
 					console.log(type, index)
@@ -246,6 +272,7 @@
 					})
 					this.topic3[index].isActive = true
 					this.form.defecateControl = score //赋值到data
+					this.form2.controlBodilyFunctions = msg
 				}
 				if (type == 4) {
 					console.log(type, index)
@@ -254,6 +281,7 @@
 					})
 					this.topic4[index].isActive = true
 					this.form.toilet = score //赋值到data
+					this.form2.wc = msg
 				}
 				if (type == 5) {
 					console.log(type, index)
@@ -262,6 +290,7 @@
 					})
 					this.topic5[index].isActive = true
 					this.form.takeashower = score //赋值到data
+					this.form2.bathtake = msg
 				}
 				if (type == 6) {
 					console.log(type, index)
@@ -270,34 +299,37 @@
 					})
 					this.topic6[index].isActive = true
 					this.form.bedchairMove = score //赋值到data
+					this.form2.transfer = msg
 				}
 			},
 			// 提交表单
 			submit() {
-				console.log(this.form)
-				// //表单非空验证
-				// let flag = Object.values(this.form).every(function(item) {
-				// 	return item != 0 | 1 | 2
-				// })
-				// console.log(flag)
-				// if (flag == false) {
-				// 	uni.showToast({
-				// 		title: '有未填选项',
-				// 		icon: 'none'
-				// 	})
-				// 	return
-				// }
+				//表单非空验证
+				let flag = Object.values(this.form2).every(function(item) {
+					return item != ''
+				})
+				console.log(flag)
+				if (flag == false) {
+					uni.showToast({
+						title: '有未填选项',
+						icon: 'none'
+					})
+					return
+				}
+				const form222 = this.form2
+				console.log(this.form, form222)
 				uni.request({
 					method: "POST",
 					url: 'https://www.qycloud.com.cn/bee/open-72810619931328627/xhll/Level/numberTwo',
 					data: {
-						id: 666,
-						eat: this.form.eat,
-						dress: this.form.dress,
-						defecateControl: this.form.defecateControl,
-						toilet: this.form.toilet,
-						takeashower: this.form.takeashower,
-						bedchairMove: this.form.bedchairMove
+						id: this.formid,
+						feedsco: this.form.eat,
+						dresssco: this.form.dress,
+						controlBodilysco: this.form.defecateControl,
+						wcsco: this.form.toilet,
+						bathtakesco: this.form.takeashower,
+						transfersco: this.form.bedchairMove,
+						...form222
 					},
 					success: (res) => {
 						console.log(res)
@@ -316,16 +348,51 @@
 			// 判断是否通过评估
 			isPassWay() {
 				console.log('等级：', this.grade1)
-				if (this.grade1 == 'A' || 'B' || 'C' || 'D') {
-
+				if (this.grade1 == 'A') {
 					this.isPass = false
 					console.log('未通过')
 					return
-				} else {
+				}
+				if (this.grade1 == 'B') {
+					this.isPass = false
+					console.log('未通过')
+					return
+				}
+				if (this.grade1 == 'C') {
+					this.isPass = false
+					console.log('未通过')
+					return
+				}
+				if (this.grade1 == 'D') {
+					this.isPass = false
+					console.log('未通过')
+					return
+				}
+				if (this.grade1 == 'E') {
 					this.isPass = true
 					console.log('通过评估')
 					return
 				}
+				if (this.grade1 == 'F') {
+					this.isPass = true
+					console.log('通过评估')
+					return
+				}
+				if (this.grade1 == 'G') {
+					this.isPass = true
+					console.log('通过评估')
+					return
+				}
+				// if (this.grade1 == 'A' || 'B' || 'C' || 'D') {
+
+				// 	this.isPass = false
+				// 	console.log('未通过')
+				// 	return
+				// } else {
+				// 	this.isPass = true
+				// 	console.log('通过评估')
+				// 	return
+				// }
 			},
 			// 提交成功提示框
 			open() {
@@ -335,6 +402,10 @@
 			close() {
 				this.$refs.popup.close()
 			}
+		},
+		onLoad(option) {
+			console.log('表单id', option.id)
+			this.formid = option.id
 		}
 	}
 </script>

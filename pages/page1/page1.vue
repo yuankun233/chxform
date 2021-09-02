@@ -40,7 +40,7 @@
 					<view><input type="text" placeholder="请输入" v-model="form1.canbaodi" /></view>
 				</view>
 				<!-- 失能时间选择器 -->
-				<view class="shinengTime">
+				<!-- <view class="shinengTime">
 					<view class="uni-title uni-common-pl title">失能时间:</view>
 					<view class="uni-list select">
 						<view class="uni-list-cell">
@@ -53,12 +53,12 @@
 							</view>
 						</view>
 					</view>
-				</view>
-
-				<!-- <view class="index_1_text_3">
-					<view>失能时间:</view>
-					<view><input type="text" placeholder="请输入" v-model="form1.shinengTime" /></view>
 				</view> -->
+
+				<view class="index_1_text_3">
+					<view>失能时间(月):</view>
+					<view><input type="text" placeholder="请输入" v-model="form1.shinengTime" /></view>
+				</view>
 				<view class="index_1_text_666">
 					<view class="relation_1">是否经过康复治疗：</view>
 					<radio-group @change="radioChange($event, 2)" class="radios">
@@ -225,7 +225,7 @@
 						<text>姓</text>
 						<text>名:</text>
 					</view>
-					<view><input type="text" placeholder="请输入" v-model="form2.name" /></view>
+					<view><input type="text" placeholder="请输入" v-model="form2.name1" /></view>
 				</view>
 
 				<view class="index_1_text_2">
@@ -260,13 +260,14 @@
 
 				<view class="index_1_text_3">
 					<view>联系电话:</view>
-					<view><input type="text" placeholder="请输入" v-model="form2.phone"
-							@blur="regExp($event,1,form2.phone,2)" />
+					<view><input type="text" placeholder="请输入" v-model="form2.phone1"
+							@blur="regExp($event,1,form2.phone1,2)" />
 					</view>
 				</view>
 				<view class="index_1_text_3">
 					<view>身份证号码:</view>
-					<view><input type="text" placeholder="请输入" v-model="form2.ID" @blur="regExp($event,2,form2.ID,2)" />
+					<view><input type="text" placeholder="请输入" v-model="form2.ID1"
+							@blur="regExp($event,2,form2.ID1,2)" />
 					</view>
 				</view>
 				<view class="index_1_text_3">
@@ -288,28 +289,28 @@
 			return {
 				date: '请选择',
 				form1: {
-					name: 'yaoyuan', //姓名
-					ID: '410782200111080011', //身份证
-					sex: '男', //性别
-					age: '19', //年龄
-					nation: '汉', //民族
-					canbaodi: '辉县市', //参保地
+					name: '', //姓名
+					ID: '', //身份证
+					sex: '', //性别
+					age: '', //年龄
+					nation: '', //民族
+					canbaodi: '', //参保地
 					shinengTime: '', //失能时间
-					isTreat: '否', //是否经过康复治疗
-					isApply: '是', // 是否首次申请
-					phone: '17634298437', // 联系电话
+					isTreat: '', //是否经过康复治疗
+					isApply: '', // 是否首次申请
+					phone: '', // 联系电话
 					safeWay: '', //保障方式
 					education: '', // 文化程度
 					liveStatus: '', // 居住情况
-					livePlace: '河南', // 居住地
+					livePlace: '', // 居住地
 					caregivers: '' //照护者
 				},
 				treatMonth: "", //治疗月数，非必填，isTreat为是时需要填
 				form2: {
-					name: '', //姓名
-					phone: '17634298437', //练习电话
-					ID: '410782200111080011', // 身份证
-					site: '河南省辉县市', //联系地址
+					name1: '', //姓名
+					phone1: '', //练习电话
+					ID1: '', // 身份证
+					site: '', //联系地址
 					relation: '' //关系
 				}
 			}
@@ -410,7 +411,7 @@
 							this.form1.phone = ''
 						}
 						if (sequence == 2) {
-							this.form2.phone = ''
+							this.form2.phone1 = ''
 						}
 						return
 					}
@@ -429,7 +430,7 @@
 							this.form1.ID = ''
 						}
 						if (sequence == 2) {
-							this.form2.ID = ''
+							this.form2.ID1 = ''
 						}
 						return
 					}
@@ -492,13 +493,20 @@
 				// 提交两个表单
 				uni.request({
 					method: "POST",
-					url: 'http://v5kwxp.natappfree.cc/ApplicationDate/getLongTermCareRiskAssessment',
+					url: 'https://www.qycloud.com.cn/bee/open-72810619931328601/ApplicationDate/getLongTermCareRiskAssessment',
 					data: {
-						form1,
-						form2
+						...form1,
+						...form2
 					},
 					success(res) {
 						console.log(res)
+						if (res.data.status == 200) {
+							const id = res.data.data.recordId // 保存表单id
+							uni.navigateTo({
+								url: `../page2/page2?id=${id}`
+							})
+						}
+
 					}
 				})
 			}

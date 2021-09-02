@@ -69,5 +69,10 @@
     },
     "uniStatistics" : {
         "enable" : false
+    },
+    "h5" : {
+        "router" : {
+            "base" : "./"
+        }
     }
 }
